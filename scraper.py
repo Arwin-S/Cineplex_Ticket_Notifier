@@ -1,21 +1,44 @@
-import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
 from bs4 import BeautifulSoup
-from time import time
+import time
+# Set up Selenium WebDriver (you may need to specify the path to your WebDriver executable)
+driver = webdriver.Chrome()
 
-# URL of the website page you want to scrape
-url = "https://www.cineplex.com/"
+# Load the initial page
+driver.get("https://www.cineplex.com/theatre/scotiabank-theatre-toronto")
+time.sleep(2)
 
-# Send a GET request to the URL
-response = requests.get(url)
+# Find the button using text
+driver.find_element(By.XPATH, '//button[normalize-space()="Get Tickets"]').click()
 
-# Parse the HTML content using BeautifulSoup
-soup = BeautifulSoup(response.content, "html.parser")
+# Wait for the side pane to load (adjust the wait time as needed)
+time.sleep(2)
+
+# Find the button using text
+driver.find_element(By.XPATH, '//button[@type="button" and @data-name="select-Movie"]').click()
+time.sleep(5)
+
+# Get the updated page source after the button click
+updated_page_source = driver.page_source
+
+# Close the Selenium WebDriver
+driver.quit()
+
+# Parse the updated page source using BeautifulSoup
+soup = BeautifulSoup(updated_page_source, "html.parser")
+
 
 # Find the element you want to monitor for changes
-element = soup.find("h1", class_="header")
-
-
-# print(element)
+elements = soup.find_all(attrs={"data-name": True})
+if elements:
+    for element in elements:
+        print(element.text.strip())
+else:
+    print("Element not found.")
+    
+    
 # # Save the initial content of the element
 # initial_content = element.text.strip()
 
