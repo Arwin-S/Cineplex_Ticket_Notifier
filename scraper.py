@@ -17,8 +17,11 @@ driver.find_element(By.XPATH, '//button[normalize-space()="Get Tickets"]').click
 time.sleep(2)
 
 # Find the button using text
-driver.find_element(By.XPATH, '//button[@type="button" and @data-name="select-Movie"]').click()
-time.sleep(5)
+driver.find_element(By.XPATH, '//button[@type="button" and @data-name="select-Date"]').click()
+time.sleep(2)
+
+# driver.find_element(By.TAG_NAME, 'h4')
+# time.sleep(5)
 
 # Get the updated page source after the button click
 updated_page_source = driver.page_source
@@ -31,7 +34,7 @@ soup = BeautifulSoup(updated_page_source, "html.parser")
 
 
 # Find the element you want to monitor for changes
-elements = soup.find_all(attrs={"data-name": True})
+elements = soup.find_all('h4')
 if elements:
     for element in elements:
         print(element.text.strip())
