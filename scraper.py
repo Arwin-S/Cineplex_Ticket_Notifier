@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import yaml
 
 from bs4 import BeautifulSoup
 import time
@@ -23,8 +24,6 @@ def web_scraper(day) -> int:
     driver.find_element(By.XPATH, '//button[@type="button" and @data-name="select-Date"]').click()
     time.sleep(5)
 
-    # driver.find_element(By.TAG_NAME, 'h4')
-    # time.sleep(5)
 
     # Get the updated page source after the button click
     updated_page_source = driver.page_source
@@ -63,24 +62,46 @@ def notify(status, client):
     
     
 if __name__ == '__main__':
-    
-    account_sid = getpass.getpass("Account SID:")
-    auth_token = getpass.getpass("Auth Token:")
-    to_phone_num = getpass.getpass("Phone Number to Notify:")
-    from_phone_num = getpass.getpass("Phone Number to Send From:")
-    
 
+    with open('credentials.yaml', 'r') as file:
+        creds = yaml.safe_load(file)
+
+    account_sid = creds['account_sid']
+    auth_token = creds['auth_token']
+    to_phone_num = creds['to_phone_num']
+    from_phone_num = creds['from_phone_num']
+    email = creds['email']
+
+
+    print(account_sid, auth_token, to_phone_num, from_phone_num, email)
     
-    client = Client(account_sid, auth_token)
     
-    day = 'Saturday'
-    # day = 'Wednesday'
-    while(True):
-        numDays = web_scraper(day)
-        if numDays == 0:
-            notify(False, client)
-        elif numDays > 1:
-            notify(True, client)
-        else:
-        
-        time.sleep(10)
+    # client = Client(account_sid, auth_token)
+    
+    # # Send start text to test API and creds working
+
+
+    # day = 'Saturday'
+    # # day = 'Wednesday'
+    # while(True):
+    #     try:
+    #         numDays = web_scraper(day)
+            
+    #         # Notify
+    #         if numDays == 0:
+    #             notify(False, client)
+    #         elif numDays > 1:
+    #             notify(True, client)
+            
+    #         # Don't notify: Dates not available
+    #         else:
+    #             # Update Email Status: Dates not available
+
+    #             time.sleep(10)
+
+    #     # Scraper didn't work
+    #     except Exception as e:
+
+    #         # Update Email Status: error with scraper
+
+    #         time.sleep(10)
